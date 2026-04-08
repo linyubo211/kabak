@@ -23,7 +23,7 @@ jobs:
       - name: 运行爬虫脚本
         env:
           FOFA_COOKIE: ${{ secrets.FOFA_COOKIE }}
-        run: python fofa_web_crawler.py
+        run: python py/update_fofa.py
 
       - name: 提交更改
         run: |
