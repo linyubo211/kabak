@@ -7,7 +7,7 @@ import json
 # 建议在 GitHub 仓库的 Settings -> Secrets 中设置 FOFA_EMAIL 和 FOFA_KEY
 FOFA_EMAIL = os.getenv("FOFA_EMAIL")
 FOFA_KEY = os.getenv("FOFA_KEY")
-TARGET_FILE = "hotel/py/1000_alive.txt" # 根据你的描述路径
+TARGET_FILE = "py/1000_alive.txt" # 根据你的描述路径
 QUERY = '"/iptv/live" && country="CN"'
 CHECK_PATH = "/iptv/live/1000.json?key=txipt"
 
