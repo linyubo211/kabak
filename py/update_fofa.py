@@ -7,7 +7,7 @@ import base64
 # --- 配置区 ---
 # 从环境变量获取 Cookie，保护账号安全
 FOFA_COOKIE = os.getenv("FOFA_COOKIE")
-TARGET_FILE = "py/1000_alive.txt"
+TARGET_FILE = "py/1000.txt"
 CHECK_PATH = "/iptv/live/1000.json?key=txipt"
 
 # 搜索关键词："/iptv/live" && country="CN"
