@@ -2,7 +2,7 @@ name: 自动更新 FOFA 酒店源
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # 每 6 小时运行一次
+    - cron: '0 */6 * * *' # 每 6 小时自动运行
   workflow_dispatch:      # 支持手动触发
 
 jobs:
@@ -30,6 +30,13 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add hotel/py/1000_alive.txt
-          git commit -m "Update: 自动追加 FOFA 新增源" || exit 0
-          git push
+          
+          # 检查文件是否存在
+          if [ -f "py/1000_alive.txt" ]; then
+            git add py/1000_alive.txt
+            # 如果没有变化，commit 会报错，所以用 || 处理
+            git commit -m "自动更新: 追加 FOFA 新数据" || echo "没有变更需要提交"
+            git push
+          else
+            echo "错误: py/1000_alive.txt 未生成，跳过推送。"
+          fi
