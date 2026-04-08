@@ -1,12 +1,12 @@
-name: 自动更新 FOFA 酒店源
+name: FOFA Web 自动爬取
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # 每 6 小时自动运行
-  workflow_dispatch:      # 支持手动触发
+    - cron: '0 2 * * *' # 每天凌晨 2 点执行一次，避免频繁访问被封号
+  workflow_dispatch:    # 支持手动运行
 
 jobs:
-  build:
+  run-crawler:
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
@@ -20,23 +20,17 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
-      - name: 运行脚本
+      - name: 运行爬虫脚本
         env:
-          FOFA_EMAIL: ${{ secrets.FOFA_EMAIL }}
-          FOFA_KEY: ${{ secrets.FOFA_KEY }}
-        run: python py/update_fofa.py
+          FOFA_COOKIE: ${{ secrets.FOFA_COOKIE }}
+        run: python fofa_web_crawler.py
 
-      - name: 提交并推送更改
+      - name: 提交更改
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-          # 检查文件是否存在
           if [ -f "py/1000_alive.txt" ]; then
             git add py/1000_alive.txt
-            # 如果没有变化，commit 会报错，所以用 || 处理
-            git commit -m "自动更新: 追加 FOFA 新数据" || echo "没有变更需要提交"
+            git commit -m "自动更新：追加最新 FOFA 资产" || echo "无变更"
             git push
-          else
-            echo "错误: py/1000_alive.txt 未生成，跳过推送。"
           fi
