@@ -2,17 +2,23 @@ import requests
 import concurrent.futures
 import os
 import re
+import random
+import urllib3
+
+# 禁用安全请求警告（针对 https 证书过期的酒店源）
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # --- 配置 ---
 SOURCE_M3U = "py/all_channels.m3u"
 CLEAN_M3U = "py/hotel_only.m3u"
-TIMEOUT = 3
-MAX_WORKERS = 100
+
+# 关键参数：建议将超时略微增长，并发略微降低以提高准确率
+TIMEOUT = 7 
+MAX_WORKERS = 30  
 
 def is_hotel_source(url):
-    # 只允许包含这些关键词的酒店源格式
+    """筛选酒店源关键词"""
     hotel_keywords = ['iptv/live', 'tsfile/live', '1000.json', 'key=txipt']
-    # 彻底屏蔽非酒店源关键字
     blacklist = ['udp://', 'vip1.', '484947', 'rtp://', 'xinketongxun', '55555.io']
     
     url_l = url.lower()
@@ -21,41 +27,92 @@ def is_hotel_source(url):
     return any(word in url_l for word in hotel_keywords)
 
 def check_url(name, url, group):
+    """深度拨测逻辑"""
+    # 模拟真实浏览器头
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Connection': 'keep-alive'
+    }
+    
     try:
-        headers = {'User-Agent': 'Mozilla/5.0 (Viera; rv:34.0) Gecko/20100101 Firefox/34.0'}
-        # 先用 HEAD 快扫
-        r = requests.head(url, timeout=TIMEOUT, headers=headers, verify=False)
-        if r.status_code == 200:
-            return {"name": name, "url": url, "group": group}
-    except:
+        # 使用 GET 而不是 HEAD，配合 stream=True 只抓取响应头和首个数据块
+        # 这样能解决很多服务器拒绝 HEAD 请求导致脚本判定失败的问题
+        with requests.get(url, timeout=TIMEOUT, headers=headers, verify=False, stream=True) as r:
+            if r.status_code == 200:
+                # 尝试读取前 1 字节数据，确保链接不是“空壳”或者挂掉的跳转
+                # 这是模拟浏览器“点开有响应”的最关键一步
+                try:
+                    content_check = next(r.iter_content(chunk_size=1), None)
+                    if content_check is not None:
+                        return {"name": name, "url": url, "group": group}
+                except:
+                    pass
+    except Exception:
         pass
     return None
 
 def main():
-    if not os.path.exists(SOURCE_M3U): return
-    tasks = []
-    with open(SOURCE_M3U, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    for i in range(len(lines)):
-        if lines[i].startswith('#EXTINF') and i+1 < len(lines):
-            info, url = lines[i], lines[i+1].strip()
-            if is_hotel_source(url):
-                name = re.search(r',(.+)$', info).group(1).strip() if ',' in info else "Unknown"
-                group = re.search(r'group-title="([^"]+)"', info).group(1).strip() if 'group-title' in info else "Hotel"
-                tasks.append((name, url, group))
+    if not os.path.exists(SOURCE_M3U):
+        print(f"❌ 找不到输入文件: {SOURCE_M3U}")
+        return
 
+    tasks = []
+    print(f"📂 正在读取并筛选酒店源任务...")
+    
+    with open(SOURCE_M3U, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # 使用正则匹配 #EXTINF 和 紧随其后的 URL
+    pattern = re.compile(r'(#EXTINF.*)\n(http.*)')
+    matches = pattern.findall(content)
+    
+    for info, url in matches:
+        url = url.strip()
+        if is_hotel_source(url):
+            # 提取频道名称
+            name = "Unknown"
+            if ',' in info:
+                name = info.split(',')[-1].strip()
+            
+            # 提取分组名称
+            group = "Hotel"
+            group_match = re.search(r'group-title="([^"]+)"', info)
+            if group_match:
+                group = group_match.group(1)
+                
+            tasks.append((name, url, group))
+
+    print(f"🚀 开始并发拨测 (并发数: {MAX_WORKERS}, 超时: {TIMEOUT}s)...")
     valid = []
+    
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         futures = [executor.submit(check_url, *t) for t in tasks]
+        
+        count = 0
         for f in concurrent.futures.as_completed(futures):
             res = f.result()
-            if res: valid.append(res)
+            count += 1
+            if res:
+                valid.append(res)
+                print(f"✅ [{len(valid)}] 发现有效源: {res['name']}")
+            
+            if count % 20 == 0:
+                print(f"📡 已进度: {count}/{len(tasks)}")
 
+    # 写入结果
+    os.makedirs(os.path.dirname(CLEAN_M3U), exist_ok=True)
     with open(CLEAN_M3U, 'w', encoding='utf-8') as f:
         f.write("#EXTM3U\n")
         for ch in valid:
             f.write(f'#EXTINF:-1 tvg-name="{ch["name"]}" group-title="{ch["group"]}",{ch["name"]}\n{ch["url"]}\n')
-    print(f"清洗完成，存活酒店源: {len(valid)}")
+            
+    print("-" * 30)
+    print(f"✨ 清洗完成！")
+    print(f"📊 扫描任务总数: {len(tasks)}")
+    print(f"🎯 最终存活酒店源: {len(valid)}")
+    print(f"💾 结果已保存至: {CLEAN_M3U}")
 
 if __name__ == "__main__":
     main()
