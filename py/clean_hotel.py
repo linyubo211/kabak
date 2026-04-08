@@ -27,30 +27,38 @@ def is_hotel_source(url):
     return any(word in url_l for word in hotel_keywords)
 
 def check_url(name, url, group):
-    """深度拨测逻辑"""
-    # 模拟真实浏览器头
+    """深度拨测逻辑：增加详细日志输出"""
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Accept': '*/*',
         'Connection': 'keep-alive'
     }
     
+    # 提取 IP 部分用于日志展示 (例如 http://1.2.3.4:80/...)
+    ip_display = url.split('/')[2] if len(url.split('/')) > 2 else url
+
     try:
-        # 使用 GET 而不是 HEAD，配合 stream=True 只抓取响应头和首个数据块
-        # 这样能解决很多服务器拒绝 HEAD 请求导致脚本判定失败的问题
+        # 使用 GET + stream=True
         with requests.get(url, timeout=TIMEOUT, headers=headers, verify=False, stream=True) as r:
             if r.status_code == 200:
-                # 尝试读取前 1 字节数据，确保链接不是“空壳”或者挂掉的跳转
-                # 这是模拟浏览器“点开有响应”的最关键一步
+                # 尝试读取 1 字节数据
                 try:
                     content_check = next(r.iter_content(chunk_size=1), None)
                     if content_check is not None:
+                        # 成功时打印详细 IP 和 频道名
+                        print(f"  ✅ [成功] {ip_display} -> {name}")
                         return {"name": name, "url": url, "group": group}
-                except:
-                    pass
-    except Exception:
-        pass
+                    else:
+                        print(f"  ❌ [失败] {ip_display} (返回内容为空)")
+                except Exception as e:
+                    print(f"  ❌ [失败] {ip_display} (读取数据流出错: {e})")
+            else:
+                print(f"  ⚠️ [跳过] {ip_display} (状态码: {r.status_code})")
+    except requests.exceptions.Timeout:
+        print(f"  ⏰ [超时] {ip_display} (超过 {TIMEOUT}秒)")
+    except Exception as e:
+        print(f"  🚫 [错误] {ip_display} (无法连接: {type(e).__name__})")
+        
     return None
 
 def main():
