@@ -2,7 +2,7 @@ name: FOFA Web 自动爬取
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 每天凌晨 2 点执行一次，避免频繁访问被封号
+    - cron: '0 */3 * * *' 
   workflow_dispatch:    # 支持手动运行
 
 jobs:
