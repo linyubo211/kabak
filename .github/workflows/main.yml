@@ -29,10 +29,10 @@ jobs:
       run: mkdir -p py/iptv_results
 
     - name: 1. 执行扫描 (scan.py)
-      run: python -u py/scan.py
+      #run: python -u py/scan.py
 
     - name: 2. 执行转换 (convert.py)
-      run: python -u py/convert.py
+      #run: python -u py/convert.py
 
     - name: 3. 执行清洗与测速 (clean_hotel.py)
       run: python -u py/clean_hotel.py
