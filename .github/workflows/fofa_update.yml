@@ -29,8 +29,8 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          if [ -f "py/1000_alive.txt" ]; then
-            git add py/1000_alive.txt
+          if [ -f "py/1000.txt" ]; then
+            git add py/1000.txt
             git commit -m "自动更新：追加最新 FOFA 资产" || echo "无变更"
             git push
           fi
