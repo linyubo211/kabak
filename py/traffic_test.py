@@ -1,26 +1,38 @@
-import requests
-import time
-import random
-import re
+import asyncio
+import aiohttp
 import os
 import json
+import re
+import sys
+import time
+import random
 import urllib3
+import requests
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor
 
-# 1. 禁用 SSL 警告（针对部分酒店源的自签名证书）
+# 1. 禁用 SSL 警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# 2. 自动路径定位：确保脚本能找到同目录下的 m3u 文件
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-SOURCE_M3U = os.path.join(CURRENT_DIR, "hotel_only.m3u")
-OUTPUT_TXT = os.path.join(CURRENT_DIR, "traffic_report.txt")
-OUTPUT_JSON = os.path.join(CURRENT_DIR, "traffic_summary.json")
+# --- 路径重构：确保在 GitHub Actions 深度目录下定位准确 ---
+# 获取当前脚本所在目录 (例如: /home/runner/work/repo/repo/py/Hotel)
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__)) 
 
-# --- 配置 ---
-TEST_DURATION = 15  # 每个 ID 测试 15 秒（GitHub 环境建议不要太长）
+# 向上跳两级回到仓库【根目录】
+BASE_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+
+# 指向根目录下的 hotels/REBORN.m3u
+SOURCE_M3U = os.path.join(BASE_PATH, "py", "hotel_only.m3u")
+
+# 设定输出目录为脚本同级目录 py/Hotel/
+OUTPUT_DIR = SCRIPT_DIR
+OUTPUT_TXT = os.path.join(OUTPUT_DIR, "traffic_report.txt")
+OUTPUT_JSON = os.path.join(OUTPUT_DIR, "traffic_summary.json")
+
+# --- 性能配置 ---
+TEST_DURATION = 15  # 每个 ID 测试 15 秒
 SAMPLES_PER_IP = 3  # 每个 IP 随机抽 3 个 ID 压测
-MAX_WORKERS = 10    # 并行线程数
+MAX_WORKERS = 10    # 并行线程数（GitHub Actions 建议不要超过 10）
 
 def test_stream_traffic(name, url):
     """模拟播放并统计流量，计算 Mbps"""
@@ -43,6 +55,7 @@ def test_stream_traffic(name, url):
 
         # 循环下载切片直到超时
         while time.time() - start_time < TEST_DURATION:
+            # 优先测末尾切片
             target_ts = ts_lines[-2:] if len(ts_lines) > 2 else ts_lines
             for ts_path in target_ts:
                 if time.time() - start_time > TEST_DURATION: break
@@ -65,7 +78,7 @@ def test_stream_traffic(name, url):
                 except: continue
             time.sleep(1) 
 
-    except Exception as e:
+    except Exception:
         return None
 
     test_time = time.time() - start_time
@@ -85,15 +98,20 @@ def test_stream_traffic(name, url):
 
 def save_reports(results, group_summary):
     """保存文本和 JSON 报告"""
+    # 确保目录存在
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
     with open(OUTPUT_TXT, 'w', encoding='utf-8') as f:
         f.write("="*70 + "\n")
         f.write(f"IPTV 酒店源流量测试报告 ({time.strftime('%Y-%m-%d %H:%M:%S')})\n")
         f.write("="*70 + "\n")
         f.write(f"{'服务器 (IP:Port)':<25} | {'频道名称':<20} | {'平均码率':<10} | {'稳定性'}\n")
         f.write("-" * 70 + "\n")
-        for res in results:
-            if res:
-                f.write(f"{res['ip_port']:<25} | {res['name'][:18]:<20} | {res['avg_mbps']:<7}Mbps | {res['stability']*100:.0f}%\n")
+        
+        # 按 IP 排序输出
+        sorted_res = sorted([r for r in results if r], key=lambda x: x['ip_port'])
+        for res in sorted_res:
+            f.write(f"{res['ip_port']:<25} | {res['name'][:18]:<20} | {res['avg_mbps']:<7}Mbps | {res['stability']*100:.0f}%\n")
         
         f.write("\n综合评估 (Summary):\n")
         for ip, summ in group_summary.items():
@@ -103,11 +121,17 @@ def save_reports(results, group_summary):
         json.dump({"summary": group_summary, "details": [r for r in results if r]}, f, ensure_ascii=False, indent=2)
 
 def main():
-    print(f"🚀 开始测试测速逻辑...")
-    print(f"📂 读取文件: {SOURCE_M3U}")
+    print(f"🚀 开始 IPTV 酒店源流量压测...")
+    print(f"📂 仓库根目录: {BASE_PATH}")
+    print(f"📂 读取源文件: {SOURCE_M3U}")
+    print(f"📂 输出目录: {OUTPUT_DIR}")
     
     if not os.path.exists(SOURCE_M3U):
         print(f"❌ 错误: 找不到源文件 {SOURCE_M3U}")
+        # 调试信息：如果找不到，列出 hotels 目录看一眼
+        hotels_dir = os.path.join(BASE_PATH, "hotels")
+        if os.path.exists(hotels_dir):
+            print(f"Hotels 目录内容: {os.listdir(hotels_dir)}")
         return
 
     with open(SOURCE_M3U, 'r', encoding='utf-8') as f:
@@ -120,24 +144,33 @@ def main():
             url = lines[i+1].strip()
             if url.startswith('http'):
                 ip_port = urlparse(url).netloc
+                if not ip_port: continue
                 if ip_port not in groups: groups[ip_port] = []
-                name = re.search(r',(.+)$', lines[i]).group(1).strip() if ',' in lines[i] else "Unknown"
+                name_match = re.search(r',(.+)$', lines[i])
+                name = name_match.group(1).strip() if name_match else "Unknown"
                 groups[ip_port].append((name, url))
 
     tasks = []
     for ip_port, urls in groups.items():
+        # 抽样压测
         samples = random.sample(urls, min(len(urls), SAMPLES_PER_IP))
         tasks.extend(samples)
 
-    print(f"📡 共有 {len(groups)} 个服务器，随机抽取 {len(tasks)} 个频道压测...")
+    print(f"📡 识别到 {len(groups)} 个服务器，共抽取 {len(tasks)} 个样本进行测试...")
 
     results = []
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-        futures = [executor.submit(test_stream_traffic, n, u) for n, u in tasks]
+        futures = {executor.submit(test_stream_traffic, n, u): (n, u) for n, u in tasks}
         for future in futures:
-            res = future.result()
-            if res: results.append(res)
+            try:
+                res = future.result()
+                if res: 
+                    results.append(res)
+                    print(f"✅ 完成: {res['ip_port']} - {res['avg_mbps']} Mbps")
+            except Exception as e:
+                print(f"⚠️ 测试出错: {e}")
 
+    # 数据汇总逻辑
     group_summary = {}
     for res in results:
         ip = res['ip_port']
@@ -149,11 +182,14 @@ def main():
         s["max_mbps"] = max(s["max_mbps"], res['max_mbps'])
 
     for ip, data in group_summary.items():
-        data["avg_mbps"] = round(sum(data["avg_mbps_list"]) / len(data["avg_mbps_list"]), 2)
+        if data["avg_mbps_list"]:
+            data["avg_mbps"] = round(sum(data["avg_mbps_list"]) / len(data["avg_mbps_list"]), 2)
+        else:
+            data["avg_mbps"] = 0
         del data["avg_mbps_list"]
 
     save_reports(results, group_summary)
-    print(f"✅ 测试完成！报告已保存至 {OUTPUT_TXT}")
+    print(f"\n✨ 测速任务结束！报告已保存至 {OUTPUT_DIR}")
 
 if __name__ == "__main__":
     main()
