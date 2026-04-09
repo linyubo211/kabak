@@ -7,7 +7,7 @@ import random
 
 # --- 配置区 ---
 FOFA_COOKIE = os.getenv("FOFA_COOKIE")
-TARGET_FILE = "py/1000_alive.txt"
+TARGET_FILE = "py/1000.txt"
 CHECK_PATH = "/iptv/live/1000.json?key=txipt"
 
 # 搜索关键词
