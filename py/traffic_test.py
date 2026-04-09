@@ -14,20 +14,23 @@ from concurrent.futures import ThreadPoolExecutor
 # 1. 禁用 SSL 警告
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# --- 路径重构：确保在 GitHub Actions 深度目录下定位准确 ---
-# 获取当前脚本所在目录 (例如: /home/runner/work/repo/repo/py/Hotel)
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__)) 
+# --- 路径重构：适配 GitHub Actions 标准环境 ---
+# 直接获取当前脚本运行的工作目录 (即仓库根目录)
+BASE_PATH = os.getcwd() 
 
-# 向上跳两级回到仓库【根目录】
-BASE_PATH = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-
-# 指向根目录下的 hotels/REBORN.m3u
+# 1. 指向你要读取的源文件
+# 如果你的文件就在 py 文件夹下，叫 hotel_only.m3u
 SOURCE_M3U = os.path.join(BASE_PATH, "py", "hotel_only.m3u")
 
-# 设定输出目录为脚本同级目录 py/Hotel/
-OUTPUT_DIR = SCRIPT_DIR
+# 2. 设定输出目录（如果你想保存在 py 文件夹内）
+OUTPUT_DIR = os.path.join(BASE_PATH, "py")
 OUTPUT_TXT = os.path.join(OUTPUT_DIR, "traffic_report.txt")
 OUTPUT_JSON = os.path.join(OUTPUT_DIR, "traffic_summary.json")
+
+# 调试打印，方便你在日志里确认路径
+print(f"✅ 确定的根目录: {BASE_PATH}")
+print(f"✅ 目标源文件: {SOURCE_M3U}")
+print(f"✅ 报告输出位: {OUTPUT_DIR}")
 
 # --- 性能配置 ---
 TEST_DURATION = 15  # 每个 ID 测试 15 秒
