@@ -3,7 +3,7 @@ name: IPTV 酒店源全流程
 on:
   schedule:
     # 每天北京时间早上 6:40 运行 (22:40 UTC)
-    - cron: '0 */4 * * *' 
+    - cron: '0 */8 * * *' 
   workflow_dispatch: 
 
 jobs:
