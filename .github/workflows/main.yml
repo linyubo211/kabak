@@ -41,17 +41,20 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         
-        # 先把远程最新的拉下来，防止推送冲突
-        git pull origin main --rebase
+        # 1. 先把所有修改加入暂存区（这是解决问题的关键）
+        git add .
 
-        # 暂存所有在 py/ 目录下的修改
-        git add py/
-        
+        # 2. 检查是否有文件变动
         if git diff --staged --quiet; then
           echo "✨ 扫描完成，但内容无变动，跳过提交。"
         else
+          # 3. 如果有变动，先 commit 到本地
           git commit -m "自动更新酒店源: $(date +'%Y-%m-%d %H:%M:%S')"
           
-          # 再次确认并推送到远程
+          # 4. 尝试拉取远程更新并合并本地 commit
+          # 使用 rebase 保持提交记录整洁
+          git pull origin main --rebase
+          
+          # 5. 推送
           git push origin main
         fi
