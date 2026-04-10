@@ -18,9 +18,3 @@ CCTV-15音乐,http://182.91.124.60:8801/tsfile/live/1051_1.m3u8?key=txiptv&playl
 天津卫视,http://182.91.124.60:8801/tsfile/live/1059_1.m3u8?key=txiptv&playlive=0&authid=0
 湖北卫视,http://182.91.124.60:8801/tsfile/live/1060_1.m3u8?key=txiptv&playlive=0&authid=0
 山东卫视,http://182.91.124.60:8801/tsfile/live/1061_1.m3u8?key=txiptv&playlive=0&authid=0
-海南卫视,http://182.91.124.60:8801/tsfile/live/1062_1.m3u8?key=txiptv&playlive=0&authid=0
-河南卫视,http://182.91.124.60:8801/tsfile/live/1063_1.m3u8?key=txiptv&playlive=0&authid=0
-青海卫视,http://182.91.124.60:8801/tsfile/live/1064_1.m3u8?key=txiptv&playlive=0&authid=0
-新疆卫视,http://182.91.124.60:8801/tsfile/live/1065_1.m3u8?key=txiptv&playlive=0&authid=0
-吉林卫视,http://182.91.124.60:8801/tsfile/live/1066_1.m3u8?key=txiptv&playlive=0&authid=0
-贵州卫视,http://182.91.124.60:8801/tsfile/live/1069_1.m3u8?key=txiptv&playlive=0&authid=0
