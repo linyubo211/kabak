@@ -2102,3 +2102,6 @@ http://58.46.29.68:9999/iptv/live/1000.json?key=txipt
 http://175.10.19.5:9999/iptv/live/1000.json?key=txipt
 http://221.232.102.143:7777/iptv/live/1000.json?key=txipt
 http://183.186.68.206:9999/iptv/live/1000.json?key=txipt
+http://218.1.208.13:7777/iptv/live/1000.json?key=txipt
+http://221.232.196.73:7777/iptv/live/1000.json?key=txipt
+http://183.186.68.174:9999/iptv/live/1000.json?key=txipt
