@@ -69,6 +69,7 @@ CHC高清电影,http://120.196.235.42:9901/tsfile/live/1046_1.m3u8?key=txiptv&pl
 东南卫视高清,http://120.196.235.42:9901/tsfile/live/1070_1.m3u8?key=txiptv&playlive=1&authid=0
 吉林卫视高清,http://120.196.235.42:9901/tsfile/live/1071_1.m3u8?key=txiptv&playlive=1&authid=0
 本港台,http://120.196.235.42:9901/tsfile/live/1072_1.m3u8?key=txiptv&playlive=1&authid=0
+明珠台(测试),http://120.196.235.42:9901/tsfile/live/1073_1.m3u8?key=txiptv&playlive=1&authid=0
 广西卫视,http://120.196.235.42:9901/tsfile/live/1074_1.m3u8?key=txiptv&playlive=1&authid=0
 陕西卫视,http://120.196.235.42:9901/tsfile/live/1077_1.m3u8?key=txiptv&playlive=1&authid=0
 山西卫视,http://120.196.235.42:9901/tsfile/live/1078_1.m3u8?key=txiptv&playlive=1&authid=0
