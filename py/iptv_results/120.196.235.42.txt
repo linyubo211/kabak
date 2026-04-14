@@ -2,8 +2,8 @@
 深圳都市频道,http://120.196.235.42:9901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
 梅州1,http://120.196.235.42:9901/tsfile/live/1002_1.m3u8?key=txiptv&playlive=1&authid=0
 梅州2,http://120.196.235.42:9901/tsfile/live/1003_1.m3u8?key=txiptv&playlive=1&authid=0
-山歌台,http://120.196.235.42:9901/tsfile/live/1004_1.m3u8?key=txiptv&playlive=1&authid=0
-测试,http://120.196.235.42:9901/tsfile/live/1005_1.m3u8?key=txiptv&playlive=1&authid=0
+汕尾-1,http://120.196.235.42:9901/tsfile/live/1004_1.m3u8?key=txiptv&playlive=1&authid=0
+汕尾-2,http://120.196.235.42:9901/tsfile/live/1005_1.m3u8?key=txiptv&playlive=1&authid=0
 翡翠台,http://120.196.235.42:9901/tsfile/live/1006_1.m3u8?key=txiptv&playlive=1&authid=0
 梅县1,http://120.196.235.42:9901/tsfile/live/1007_1.m3u8?key=txiptv&playlive=1&authid=0
 深圳龙岗频道,http://120.196.235.42:9901/tsfile/live/1008_1.m3u8?key=txiptv&playlive=1&authid=0
