@@ -2388,3 +2388,4 @@ http://113.116.145.221:8883/iptv/live/1000.json?key=txipt
 http://175.0.75.93:9999/iptv/live/1000.json?key=txipt
 http://113.218.242.135:9002/iptv/live/1000.json?key=txipt
 http://175.9.33.124:8088/iptv/live/1000.json?key=txipt
+http://125.43.247.245:9901/iptv/live/1000.json?key=txipt
