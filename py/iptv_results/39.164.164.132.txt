@@ -49,3 +49,6 @@ CCTV-15,http://39.164.164.132:9901/tsfile/live/1014_1.m3u8?key=txiptv&playlive=0
 河南电视剧,http://39.164.164.132:9901/tsfile/live/1047_1.m3u8?key=txiptv&playlive=0&authid=0
 河南戏曲,http://39.164.164.132:9901/tsfile/live/1048_1.m3u8?key=txiptv&playlive=0&authid=0
 河南新闻,http://39.164.164.132:9901/tsfile/live/1049_1.m3u8?key=txiptv&playlive=0&authid=0
+周口新闻综合,http://39.164.164.132:9901/tsfile/live/1051_1.m3u8?key=txiptv&playlive=0&authid=0
+郸城,http://39.164.164.132:9901/tsfile/live/1052_1.m3u8?key=txiptv&playlive=0&authid=0
+河南公共频道,http://39.164.164.132:9901/tsfile/live/1053_1.m3u8?key=txiptv&playlive=0&authid=0
