@@ -37,4 +37,3 @@ CCTV15-音乐,http://171.9.110.35:9901/tsfile/live/0015_1.m3u8?key=txiptv&playli
 吉林卫视,http://171.9.110.35:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=1&authid=0
 广西卫视,http://171.9.110.35:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=1&authid=0
 cctv5+体育,http://171.9.110.35:9901/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
-新疆卫视,http://171.9.110.35:9901/tsfile/live/0110_1.m3u8?key=txiptv&playlive=1&authid=0
