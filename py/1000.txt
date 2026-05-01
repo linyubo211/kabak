@@ -2437,3 +2437,6 @@ http://221.232.196.61:7777/iptv/live/1000.json?key=txipt
 http://124.165.108.86:8899/iptv/live/1000.json?key=txipt
 http://124.165.108.77:8899/iptv/live/1000.json?key=txipt
 http://124.165.108.82:8899/iptv/live/1000.json?key=txipt
+http://175.0.79.207:8088/iptv/live/1000.json?key=txipt
+http://171.38.149.175:8082/iptv/live/1000.json?key=txipt
+http://175.11.74.58:9999/iptv/live/1000.json?key=txipt
