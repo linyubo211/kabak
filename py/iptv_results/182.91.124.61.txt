@@ -2,8 +2,8 @@ CCTV-1综合,http://182.91.124.61:8801/tsfile/live/1037_1.m3u8?key=txiptv&playli
 CCTV-2财经,http://182.91.124.61:8801/tsfile/live/1038_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-3综艺,http://182.91.124.61:8801/tsfile/live/1039_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-4中文国际,http://182.91.124.61:8801/tsfile/live/1040_1.m3u8?key=txiptv&playlive=0&authid=0
-CCTV-5体育,http://182.91.124.61:8801/tsfile/live/1041_1.m3u8?key=txiptv&playlive=0&authid=0
-CCTV-6电影,http://182.91.124.61:8801/tsfile/live/1042_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV-5体育,http://182.91.124.61:8801/tsfile/live/faacts/1041_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV-6电影,http://182.91.124.61:8801/tsfile/live/faacts/1042_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-7国防军事,http://182.91.124.61:8801/tsfile/live/1043_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-8电视剧,http://182.91.124.61:8801/tsfile/live/1044_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-9纪录,http://182.91.124.61:8801/tsfile/live/1045_1.m3u8?key=txiptv&playlive=0&authid=0
@@ -37,4 +37,3 @@ CCTV-15音乐,http://182.91.124.61:8801/tsfile/live/1051_1.m3u8?key=txiptv&playl
 重庆卫视,http://182.91.124.61:8801/tsfile/live/1073_1.m3u8?key=txiptv&playlive=0&authid=0
 江西卫视,http://182.91.124.61:8801/tsfile/live/1074_1.m3u8?key=txiptv&playlive=0&authid=0
 四川卫视,http://182.91.124.61:8801/tsfile/live/1075_1.m3u8?key=txiptv&playlive=0&authid=0
-动作电影,http://182.91.124.61:8801/tsfile/live/1076_1.m3u8?key=txiptv&playlive=0&authid=0
