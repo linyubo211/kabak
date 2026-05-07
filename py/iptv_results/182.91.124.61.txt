@@ -37,3 +37,4 @@ CCTV-15音乐,http://182.91.124.61:8801/tsfile/live/1051_1.m3u8?key=txiptv&playl
 重庆卫视,http://182.91.124.61:8801/tsfile/live/1073_1.m3u8?key=txiptv&playlive=0&authid=0
 江西卫视,http://182.91.124.61:8801/tsfile/live/1074_1.m3u8?key=txiptv&playlive=0&authid=0
 四川卫视,http://182.91.124.61:8801/tsfile/live/1075_1.m3u8?key=txiptv&playlive=0&authid=0
+动作电影,http://182.91.124.61:8801/tsfile/live/1076_1.m3u8?key=txiptv&playlive=0&authid=0
