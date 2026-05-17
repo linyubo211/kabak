@@ -5,6 +5,7 @@ CCTV-4国际,http://182.91.124.60:8801/tsfile/live/1040_1.m3u8?key=txiptv&playli
 CCTV-6电影,http://182.91.124.60:8801/tsfile/live/1042_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-7军事,http://182.91.124.60:8801/tsfile/live/1043_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-8电视剧,http://182.91.124.60:8801/tsfile/live/1044_1.m3u8?key=txiptv&playlive=0&authid=0
+CCTV-10科教,http://182.91.124.60:8801/tsfile/live/1046_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-11戏曲,http://182.91.124.60:8801/tsfile/live/1047_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-12社会与法,http://182.91.124.60:8801/tsfile/live/1048_1.m3u8?key=txiptv&playlive=0&authid=0
 CCTV-13新闻,http://182.91.124.60:8801/tsfile/live/1049_1.m3u8?key=txiptv&playlive=0&authid=0
