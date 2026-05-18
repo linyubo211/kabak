@@ -21,7 +21,6 @@ CCTV5+体育赛事,http://121.19.134.141:808/tsfile/live/0018_1.m3u8?key=txiptv&
 河北都市,http://121.19.134.141:808/tsfile/live/1001_1.m3u8?key=txiptv&playlive=1&authid=0
 河北影视,http://121.19.134.141:808/tsfile/live/1002_1.m3u8?key=txiptv&playlive=1&authid=0
 河北少儿科教,http://121.19.134.141:808/tsfile/live/1003_1.m3u8?key=txiptv&playlive=1&authid=0
-河北公共,http://121.19.134.141:808/tsfile/live/1004_1.m3u8?key=txiptv&playlive=1&authid=0
 河北农民,http://121.19.134.141:808/tsfile/live/1005_1.m3u8?key=txiptv&playlive=1&authid=0
 靓彩河北,http://121.19.134.141:808/tsfile/live/1006_1.m3u8?key=txiptv&playlive=1&authid=0
 保定新闻综合,http://121.19.134.141:808/tsfile/live/1007_1.m3u8?key=txiptv&playlive=1&authid=0
