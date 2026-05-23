@@ -16,6 +16,8 @@ CLEAN_M3U = "py/hotel_only.m3u"
 # 🌟 优化参数：稍微延长超时时间，配合错峰延迟，并发控制在 25 既有速度又不易被酒店服务器拉黑
 TIMEOUT = 8        
 MAX_WORKERS = 25   
+MAX_RETRIES = 3  # 🌟 提取为全局配置，彻底解决 main 函数找不到变量的问题
+
 
 def is_hotel_source(url):
     """筛选酒店源关键词与黑名单过滤"""
@@ -26,6 +28,7 @@ def is_hotel_source(url):
     if any(word in url_l for word in blacklist):
         return False
     return any(word in url_l for word in hotel_keywords)
+
 
 def check_url(name, url, group):
     """深度拨测逻辑：集成错峰延迟、多轮复活重试机制，大幅降低频道误杀率"""
@@ -41,8 +44,7 @@ def check_url(name, url, group):
     # 🌟 策略一：错峰出行。让线程随机小憩 0 到 1.5 秒，避免 25 个并发同时撞击同一个酒店 IP
     time.sleep(random.uniform(0, 1.5))
 
-    max_retries = 3  # 🌟 策略二：给足 3 次机会（1次正赛 + 2次复活赛）
-    for attempt in range(1, max_retries + 1):
+    for attempt in range(1, MAX_RETRIES + 1):
         try:
             # 使用 GET + stream=True 读取音视频流片段进行真实拨测
             with requests.get(url, timeout=TIMEOUT, headers=headers, verify=False, stream=True) as r:
@@ -57,19 +59,20 @@ def check_url(name, url, group):
                                 print(f"    ✅ [成功] {ip_display} -> {name}")
                             return {"name": name, "url": url, "group": group}
                         else:
-                            print(f"    ❌ [失败] {ip_display} (返回内容为空) - 尝试 {attempt}/{max_retries}")
+                            print(f"    ❌ [失败] {ip_display} (返回内容为空) - 尝试 {attempt}/{MAX_RETRIES}")
                     except Exception as e:
-                        print(f"    ❌ [失败] {ip_display} (数据流读取错: {e}) - 尝试 {attempt}/{max_retries}")
+                        print(f"    ❌ [失败] {ip_display} (数据流读取错: {e}) - 尝试 {attempt}/{MAX_RETRIES}")
                 else:
-                    print(f"    ⚠️ [跳过] {ip_display} (状态码: {r.status_code}) - 尝试 {attempt}/{max_retries}")
+                    print(f"    ⚠️ [跳过] {ip_display} (状态码: {r.status_code}) - 尝试 {attempt}/{MAX_RETRIES}")
         except (requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
-            print(f"    ⏰ [超时/网络错] {ip_display} ({type(e).__name__}) - 尝试 {attempt}/{max_retries}")
+            print(f"    ⏰ [超时/网络错] {ip_display} ({type(e).__name__}) - 尝试 {attempt}/{MAX_RETRIES}")
         
         # 如果不是最后一次尝试，稍微等待 1 秒再触发重试，避开网络瞬时拥堵
-        if attempt < max_retries:
+        if attempt < MAX_RETRIES:
             time.sleep(1)
             
     return None
+
 
 def main():
     if not os.path.exists(SOURCE_M3U):
@@ -102,7 +105,8 @@ def main():
                 
             tasks.append((name, url, group))
 
-    print(f"🚀 开始并发拨测 (并发数: {MAX_WORKERS}, 单次超时: {TIMEOUT}s, 最大重试: {max_retries})...")
+    # 这里的 max_retries 已修改为大写的全局变量 MAX_RETRIES
+    print(f"🚀 开始并发拨测 (并发数: {MAX_WORKERS}, 单次超时: {TIMEOUT}s, 最大重试: {MAX_RETRIES})...")
     valid = []
     
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
@@ -131,6 +135,7 @@ def main():
     print(f"📊 扫描任务总数: {len(tasks)}")
     print(f"🎯 最终存活酒店源: {len(valid)}")
     print(f"💾 结果已保存至: {CLEAN_M3U}")
+
 
 if __name__ == "__main__":
     main()
