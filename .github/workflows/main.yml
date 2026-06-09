@@ -2,8 +2,10 @@ name: IPTV 酒店源全流程
 
 on:
   schedule:
-    - cron: '5 1,9,17 * * *' 
-  workflow_dispatch: 
+    # 转换为 UTC 时间，并巧妙错开分钟（避开整点和5分高峰）
+    # 对应北京时间每天：01:23, 09:23, 17:23 准时运行
+    - cron: '23 17,1,9 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
