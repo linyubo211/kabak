@@ -2457,3 +2457,6 @@ http://58.48.104.133:7777/iptv/live/1000.json?key=txipt
 http://59.174.117.229:7777/iptv/live/1000.json?key=txipt
 http://221.232.199.87:7777/iptv/live/1000.json?key=txipt
 http://221.232.198.142:7777/iptv/live/1000.json?key=txipt
+http://118.31.244.228:443/iptv/live/1000.json?key=txipt
+http://117.72.181.199:443/iptv/live/1000.json?key=txipt
+http://114.35.246.141:8081/iptv/live/1000.json?key=txipt
