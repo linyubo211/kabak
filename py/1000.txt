@@ -2470,3 +2470,4 @@ http://61.216.29.102:8000/iptv/live/1000.json?key=txipt
 http://103.39.232.220:443/iptv/live/1000.json?key=txipt
 http://101.201.108.133:443/iptv/live/1000.json?key=txipt
 http://113.218.239.132:9002/iptv/live/1000.json?key=txipt
+http://120.78.234.104:5678/iptv/live/1000.json?key=txipt
