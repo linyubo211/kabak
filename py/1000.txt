@@ -2484,3 +2484,5 @@ http://171.38.192.233:8082/iptv/live/1000.json?key=txipt
 http://175.0.75.245:8088/iptv/live/1000.json?key=txipt
 http://59.173.121.1:7777/iptv/live/1000.json?key=txipt
 http://58.48.105.144:7777/iptv/live/1000.json?key=txipt
+http://58.255.200.152:10443/iptv/live/1000.json?key=txipt
+http://221.232.196.229:7777/iptv/live/1000.json?key=txipt
