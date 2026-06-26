@@ -1,8 +1,6 @@
 name: IPTV Traffic Speed Test
 
 on:
-  schedule:
-    - cron: '5 2,10,18 * * *'
   workflow_dispatch:
 
 jobs:
