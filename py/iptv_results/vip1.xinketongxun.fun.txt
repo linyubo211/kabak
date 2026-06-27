@@ -73,7 +73,7 @@ CCTV5+体育赛事HD,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.8:32008
 广东影视频道,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.2:32002
 广东新闻频道,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.5:32005
 广东公共频道,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.6:32006
-广东珠江频道,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.11:32011
+广东珠江频道HD,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.11:32011
 广东经济科教,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.3:32003
 广东南方卫视,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.21:32021
 BRTV纪实科教,http://vip1.xinketongxun.fun:8082/udp://@224.1.2.4:32004
