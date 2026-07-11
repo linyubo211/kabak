@@ -37,8 +37,8 @@ CCTV-17,http://106.115.27.87:9901/tsfile/live/1015_1.m3u8?key=txiptv&playlive=1&
 四川卫视,http://106.115.27.87:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=1&authid=0
 江西卫视,http://106.115.27.87:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=1&authid=0
 贵州卫视,http://106.115.27.87:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=1&authid=0
-湖北卫视,http://106.115.27.87:9901/tsfile/live/0132_1.m3u8?key=txiptv&playlive=1&authid=0
-重庆卫视,http://106.115.27.87:9901/tsfile/live/0142_1.m3u8?key=txiptv&playlive=1&authid=0
+湖北卫视,http://106.115.27.87:9901/tsfile/live/faacts/0132_1.m3u8?key=txiptv&playlive=1&authid=0
+重庆卫视,http://106.115.27.87:9901/tsfile/live/faacts/0142_1.m3u8?key=txiptv&playlive=1&authid=0
 东南卫视,http://106.115.27.87:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=1&authid=0
 广东卫视,http://106.115.27.87:9901/tsfile/live/0125_1.m3u8?key=txiptv&playlive=1&authid=0
 广西卫视,http://106.115.27.87:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=1&authid=0
