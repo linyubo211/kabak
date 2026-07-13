@@ -9,8 +9,13 @@ jobs:
   run-crawler:
     runs-on: ubuntu-latest
     steps:
-      - name: 检出代码
+      # 1. 核心：直接检出你的私有库到工作区根目录
+      - name: 检出私有库代码
         uses: actions/checkout@v4
+        with:
+          repository: 'linyubo211/tvlive'
+          token: ${{ secrets.MY_PRIVATE_REPO_TOKEN }} # 你之前配置的私库专属访问Token
+          fetch-depth: 0
 
       - name: 设置 Python
         uses: actions/setup-python@v5
@@ -20,17 +25,28 @@ jobs:
       - name: 安装依赖
         run: pip install requests
 
+      # 2. 运行爬虫脚本（读取和追加的都是私库检出来的 py/1000.txt）
       - name: 运行爬虫脚本
         env:
+          # 📢 提示：请确保你的公开库 -> Settings -> Secrets 中已经配置了 FOFA_COOKIE
           FOFA_COOKIE: ${{ secrets.FOFA_COOKIE }}
         run: python py/update_fofa.py
 
-      - name: 提交更改
+      # 3. 核心：将更新完的 1000.txt 直接推送回私库
+      - name: 提交更改回私有库
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          
           if [ -f "py/1000.txt" ]; then
             git add py/1000.txt
-            git commit -m "自动更新：追加最新 FOFA 资产" || echo "无变更"
-            git push
+            
+            # 只有当文件真正有变动时才提交和推送
+            if git diff --staged --quiet; then
+              echo "✨ 数据无变更，跳过回传。"
+            else
+              git commit -m "自动更新：追加最新 FOFA 资产 (由公开Action执行)"
+              git pull origin main --rebase
+              git push origin main
+            fi
           fi
