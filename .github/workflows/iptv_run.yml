@@ -1,4 +1,4 @@
-name: IPTV 酒店源（算力在公开，数据在私库）
+name: IPTV 酒店源
 
 on:
   schedule:
