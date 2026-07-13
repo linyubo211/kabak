@@ -2,56 +2,54 @@ name: IPTV 酒店源
 
 on:
   schedule:
+    # 对应北京时间：每天上午 09:23、下午 17:23、次日凌晨 01:23 自动运行一次
     - cron: '23 17,1,9 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # 允许你在 GitHub 页面上手动点击运行
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 120 # 流量压测耗时较长，给予充足的超时时间
 
     steps:
-    # 📢 注意：我们甚至不需要检出公开库的代码了！直接检出私库。
-    - name: 1. 检出私有库代码到当前根目录
-      uses: actions/checkout@v4
-      with:
-        repository: 'linyubo211/tvlive'
-        token: ${{ secrets.MY_PRIVATE_REPO_TOKEN }} # 必须使用你之前配置的私人Token
-        fetch-depth: 0 # 检出完整历史，方便后面 push
+      - name: 1. 检出私有库代码到当前根目录
+        uses: actions/checkout@v4
+        with:
+          repository: 'linyubo211/tvlive'
+          token: ${{ secrets.MY_PRIVATE_REPO_TOKEN }} # 你的私人 GitHub Token
+          fetch-depth: 0 # 检出完整历史，方便后面 push
 
-    - name: 2. 环境准备
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
+      - name: 2. 环境准备
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: 3. 安装依赖
-      run: pip install requests urllib3
+      - name: 3. 安装依赖
+        run: pip install requests urllib3
 
-    - name: 4. 执行扫描 (此时运行的就是当前根目录下的脚本，读取的也是私库的 1000.txt)
-      run: python -u py/scan.py
+      - name: 4. 执行扫描
+        run: python -u py/scan.py
 
-    - name: 5. 执行转换
-      run: python -u py/convert.py
+      - name: 5. 执行转换
+        run: python -u py/convert.py
 
-    # 如果需要执行第三个流量测试脚本，把下面两行的 # 号删掉即可
-    # - name: 6. 执行流量测速
-    #   run: python -u py/traffic_test.py
+      - name: 6. 执行流量测速
+        run: python -u py/traffic_test.py
 
-    - name: 7. 将生成的结果直接提交并推送回【私有库】
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        
-        # 将脚本运行产生的所有新文件（M3U、alive.txt等）加入暂存区
-        git add .
-        
-        if git diff --staged --quiet; then
-          echo "✨ 扫描完成，但内容无变动，跳过回传私库。"
-        else
-          git commit -m "自动更新酒店源 (由公开Action执行): $(date +'%Y-%m-%d %H:%M:%S')"
+      - name: 7. 将生成的结果直接提交并推送回【私有库】
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           
-          # 因为我们是用 PAT 检出的，这里的 origin 已经是你的私库了
-          # 拉取私库最新变动以防冲突，然后推送到私库的 main 分支
-          git pull origin main --rebase
-          git push origin main
-        fi
+          # 将包含新生成的测速报告在内的所有变更加入暂存区
+          git add .
+          
+          if git diff --staged --quiet; then
+            echo "✨ 扫描与测速完成，但内容无变动，跳过回传私库。"
+          else
+            git commit -m "自动更新酒店源及流量测速报告 (由公开Action执行): $(date +'%Y-%m-%d %H:%M:%S')"
+            
+            # 使用 rebase 防止多人协作冲突，推送到私库的 main 分支
+            git pull origin main --rebase
+            git push origin main
+          fi
