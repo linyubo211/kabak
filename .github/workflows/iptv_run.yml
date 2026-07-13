@@ -1,0 +1,68 @@
+name: IPTV 酒店源公开调用流
+
+on:
+  schedule:
+    # 对应北京时间每天：01:23, 09:23, 17:23
+    - cron: '23 17,1,9 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+    - name: 1. 检出公开库代码（用于存放输入输出结果）
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 2. 检出私有库代码（提取脚本文件）
+      uses: actions/checkout@v4
+      with:
+        repository: 'linyubo211/tvlive'
+        token: ${{ secrets.MY_PRIVATE_REPO_TOKEN }} # 使用你配置的私人Token
+        path: 'private_repo' # 将私有库临时下载到当前目录下的 private_repo 文件夹中
+
+    - name: 3. 环境准备
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: 4. 安装依赖
+      run: pip install requests urllib3
+
+    - name: 5. 目录初始化
+      run: |
+        mkdir -p py
+        # 如果你的公开库还没有 1000.txt，先创建一个空的防止脚本报错
+        if [ ! -f "py/1000.txt" ]; then echo "" > py/1000.txt; fi
+
+    - name: 6. 执行扫描 (调用私有库 scan.py)
+      run: python -u private_repo/py/scan.py
+      # 注意：由于scan.py内部写死了 INPUT_FILE = "py/1000.txt"，
+      # 虽然执行的是私有库的脚本，但读取和写入的都是公开库根目录下的 py/ 文件夹。
+
+    - name: 7. 执行转换 (调用私有库 convert.py)
+      run: python -u private_repo/py/convert.py
+
+    # 如果你想执行第三个脚本 traffic_test.py，在此处取消注释即可
+    # - name: 8. 执行流量测速 (调用私有库 traffic_test.py)
+    #   run: python -u private_repo/py/traffic_test.py
+
+    - name: 9. 提交并推送结果到公开库
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # 移除临时下载的私有库，防止把私有库的代码推送到公开库
+        rm -rf private_repo
+        
+        git add .
+        if git diff --staged --quiet; then
+          echo "✨ 扫描完成，但内容无变动，跳过提交。"
+        else
+          git commit -m "自动更新酒店源: $(date +'%Y-%m-%d %H:%M:%S')"
+          git pull origin main --rebase
+          git push origin main
+        fi
