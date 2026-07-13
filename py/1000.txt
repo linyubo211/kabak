@@ -2529,3 +2529,7 @@ http://125.34.23.142:9999/iptv/live/1000.json?key=txipt
 http://171.124.179.34:8899/iptv/live/1000.json?key=txipt
 http://123.115.137.243:9999/iptv/live/1000.json?key=txipt
 http://112.27.5.218:9901/iptv/live/1000.json?key=txipt
+http://175.0.69.253:9002/iptv/live/1000.json?key=txipt
+http://58.255.200.216:10443/iptv/live/1000.json?key=txipt
+http://114.135.1.244:9999/iptv/live/1000.json?key=txipt
+http://47.104.249.123:3000/iptv/live/1000.json?key=txipt
