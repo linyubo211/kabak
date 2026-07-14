@@ -33,8 +33,8 @@ jobs:
       - name: 5. 执行转换
         run: python -u py/convert.py
 
-      - name: 6. 执行流量测速
-        run: python -u py/traffic_test.py
+      - name: 6. 执行流量测速与清洗
+        run: python -u py/clean_hotel.py
 
       - name: 7. 将生成的结果直接提交并推送回【私有库】
         run: |
