@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 120 # 流量压测耗时较长，给予充足的超时时间
+    timeout-minutes: 360 # 流量压测耗时较长，给予充足的超时时间
 
     steps:
       - name: 1. 检出私有库代码到当前根目录
