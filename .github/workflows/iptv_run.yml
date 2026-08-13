@@ -3,7 +3,7 @@ name: IPTV 酒店源
 on:
   schedule:
     # 对应北京时间：每天上午 09:23、下午 17:23、次日凌晨 01:23 自动运行一次
-    - cron: '23 */3 * * *'
+    - cron: '23 */4 * * *'
   workflow_dispatch: # 允许你在 GitHub 页面上手动点击运行
 
 jobs:
