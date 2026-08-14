@@ -1,11 +1,11 @@
 name: IPTV Traffic Speed Test
 
-
 on:
   schedule:
     # 对应北京时间：每天上午 09:23、下午 17:23、次日凌晨 01:23 自动运行一次
     - cron: '53 */4 * * *'
   workflow_dispatch: # 允许你在 GitHub 页面上手动点击运行    
+
 jobs:
   test_speed:
     runs-on: ubuntu-latest
@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          repository: 'linyubo211/tvlive'
+          token: ${{ secrets.MY_PRIVATE_REPO_TOKEN }}
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -42,7 +46,14 @@ jobs:
             git commit -m "Update IPTV Traffic Report $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
             
             # 2. 关键步骤：先拉取远程更新，采用 rebase 模式避免产生额外的 merge commit
-            git pull --rebase origin main
+            git pull --rebase origin main -X theirs || {
+              echo "⚠️ Rebase 失败，尝试强制覆盖策略..."
+              git rebase --abort
+              git fetch origin main
+              git reset --soft origin/main
+              git add py/traffic_report.txt py/traffic_summary.json
+              git commit -m "Update IPTV Traffic Report (Force Overwrite) $(date +'%Y-%m-%d %H:%M')"
+            }
             
             # 3. 再次推送
             git push origin main
