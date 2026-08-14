@@ -1,8 +1,10 @@
 name: IPTV Traffic Speed Test
 
-on:
-  workflow_dispatch:
 
+on:
+  schedule:
+    # 对应北京时间：每天上午 09:23、下午 17:23、次日凌晨 01:23 自动运行一次
+    - cron: '53 */4 * * *'
 jobs:
   test_speed:
     runs-on: ubuntu-latest
