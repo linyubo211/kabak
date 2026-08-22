@@ -1,0 +1,55 @@
+name: 自动抓取并更新 1000.txt 到私有库
+
+on:
+  schedule:
+    # 每天定时运行一次（例如凌晨 1 点）
+    - cron: '0 1 * * *'
+  workflow_dispatch: # 允许在 GitHub 页面上手动点击运行
+
+jobs:
+  update-1000txt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. 检出私有库代码到当前环境
+        uses: actions/checkout@v4
+        with:
+          repository: 'linyubo211/tvlive'
+          token: ${{ secrets.MY_PRIVATE_REPO_TOKEN }} # 必须在公开库配置此具有私库读写权限的 PAT
+          fetch-depth: 0
+
+      - name: 2. 环境准备
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 3. 安装依赖
+        run: pip install requests
+
+      - name: 4. 运行抓取与转换脚本
+        run: python -u py/fetch_sources.py
+
+      - name: 5. 提交并推送 1000.txt 回私有库
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # 只对 1000.txt 进行暂存
+          git add py/1000.txt
+          
+          if git diff --staged --quiet; then
+            echo "✨ 1000.txt 内容无变动，跳过回传私库。"
+          else
+            git commit -m "🔄 自动更新 1000.txt 基础源列表 (由公开Action执行): $(date +'%Y-%m-%d %H:%M:%S')"
+            
+            # 拉取最新代码，若有冲突优先以本地新生成的为准
+            git pull origin main --rebase -X theirs || {
+              echo "⚠️ Rebase 失败，尝试强制覆盖策略..."
+              git rebase --abort
+              git fetch origin main
+              git reset --soft origin/main
+              git add py/1000.txt
+              git commit --amend -m "🔄 自动更新 1000.txt (强制覆盖): $(date +'%Y-%m-%d %H:%M:%S')"
+            }
+            
+            git push origin main
+          fi
